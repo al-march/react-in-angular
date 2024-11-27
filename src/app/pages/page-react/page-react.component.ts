@@ -1,24 +1,24 @@
-import { PageIntro, PageIntroProps } from '@/react/page-intro/PageIntro';
+import { PageIntroProps, PageReact } from './PageReact';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FC } from 'react';
-import { ReactWrapper } from '../../react-wrapper/react-wrapper.directive';
-import { interval, map, Observable } from 'rxjs';
+import { ReactComponent } from '../../react-component';
+import { interval, map } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-page-react',
-  imports: [ReactWrapper],
-  templateUrl: './page-react.component.html',
-  styleUrl: './page-react.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ReactComponent],
+  template: `
+    <div
+      [react]="PageReact"
+      [props]="PageIntroProps()"
+    ></div>
+  `
 })
 export default class PageReactComponent {
-  reactPage: FC<PageIntroProps> = PageIntro;
+  PageReact = PageReact;
 
-  props$: Observable<PageIntroProps> = interval(1000).pipe(
-    map((count) => this.createProps(count))
-  );
-  props = toSignal(this.props$, {
+  PageIntroProps = toSignal(interval(1000).pipe(map((count) => this.createProps(count))), {
     initialValue: this.createProps()
   });
 

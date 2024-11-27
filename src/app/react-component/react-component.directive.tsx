@@ -1,18 +1,18 @@
-import { AfterViewInit, Directive, ElementRef, inject, input, OnChanges } from "@angular/core";
+import { AfterViewInit, Directive, ElementRef, inject, input, OnChanges, OnDestroy } from "@angular/core";
 import React, { FC } from "react";
 import { createRoot, Root } from "react-dom/client";
 
 type InferProps<C> = C extends FC<infer Props> ? Props : never;
 
 @Directive({
-  selector: "app-react-wrapper",
+  selector: "[react]",
   standalone: true
 })
-export class ReactWrapper<Comp extends FC<any>> implements AfterViewInit, OnChanges {
-  private readonly elementRef = inject(ElementRef);
+export class ReactComponent<Comp extends FC<any>> implements AfterViewInit, OnChanges, OnDestroy {
+  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private root?: Root;
 
-  readonly component = input<Comp>();
+  readonly react = input.required<Comp>();
   readonly props = input<InferProps<Comp>>();
 
   ngAfterViewInit(): void {
@@ -24,8 +24,12 @@ export class ReactWrapper<Comp extends FC<any>> implements AfterViewInit, OnChan
     this.render();
   }
 
-  render(): void {
-    const Component = this.component() as FC;
+  ngOnDestroy(): void {
+    this.root?.unmount();
+  }
+
+  protected render(): void {
+    const Component: FC = this.react();
     if (this.root && Component) {
       this.root.render(<Component {...this.props()} />);
     }

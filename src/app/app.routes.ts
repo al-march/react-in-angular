@@ -8,5 +8,9 @@ export const routes: Routes = [
   {
     path: 'mixed-page',
     loadComponent: () => import('./pages/page-mixed/page-mixed.component')
+  },
+  {
+    path: 'vkui-page',
+    loadComponent: () => import('./pages/page-vkui/page-vkui.component')
   }
 ];

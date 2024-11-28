@@ -1,12 +1,13 @@
 import React, { FC, ReactNode } from "react";
 
 type ContentProps = {
-  children: ReactNode
+  children: ReactNode,
+  onClick?: () => void,
 }
 
-export const ReactContent: FC<ContentProps> = ({ children }) => {
+export const ReactContent: FC<ContentProps> = ({ children, onClick }) => {
   return (
-    <div>
+    <div onClick={onClick}>
       {children}
     </div>
   );

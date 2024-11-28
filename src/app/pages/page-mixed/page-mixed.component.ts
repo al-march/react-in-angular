@@ -9,16 +9,27 @@ import { ReactContent } from './ReactContent';
     ReactComponent
   ],
   template: `
-    <div>
+    <div (click)="ngClick()">
       I am an angular template!
     </div>
 
     <div
       [react]="Content"
-      [props]="{children: 'I am an React template!'}"
+      [props]="{
+        children: 'I am an React template!',
+        onClick: reactClick
+      }"
     ></div>
   `
 })
 export default class PageMixedComponent {
   protected readonly Content = ReactContent;
+
+  ngClick() {
+    console.log('clicked from angular');
+  }
+
+  reactClick() {
+    console.log('clicked from react');
+  }
 }

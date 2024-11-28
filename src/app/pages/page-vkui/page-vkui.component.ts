@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, INJECTOR, input } from '@angular/core';
 import { PageVkui } from './PageVkui';
 import { ReactComponent } from '../../react-component';
 
@@ -11,10 +11,12 @@ import { ReactComponent } from '../../react-component';
   template: `
     <div
       [react]="PageVkui"
+      [props]="{injector, id: id()}"
     ></div>
   `
 })
 export default class PageVkuiComponent {
-
+  readonly id = input<string>('');
+  readonly injector = inject(INJECTOR);
   protected readonly PageVkui = PageVkui;
 }

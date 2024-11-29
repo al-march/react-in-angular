@@ -5,7 +5,7 @@ import { createRoot, Root } from "react-dom/client";
 type InferProps<C> = C extends FC<infer Props> ? Props : never;
 
 @Directive({
-  selector: "[react]",
+  selector: "[react], app-react",
   standalone: true
 })
 export class ReactComponent<Comp extends FC<any>> implements AfterViewInit, OnChanges, OnDestroy {

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ReactComponent } from '../../shared/react-component';
+import { ReactComponent } from '@/shared/react-component';
 import { Topbar } from './Topbar';
 
 @Component({

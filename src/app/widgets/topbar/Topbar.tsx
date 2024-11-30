@@ -5,7 +5,7 @@ export const Topbar: FC = () => {
   return (
     <Panel id="panel1">
       <PanelHeader after={<Avatar size={36} />}>
-        Todo app
+        NgReact
       </PanelHeader>
     </Panel>
   );

@@ -33,15 +33,16 @@ export class ReactComponent<Comp extends FC<any>> implements AfterViewInit, OnCh
 
   protected render(): void {
     const Component: FC = this.react();
+
     if (this.root && Component) {
       this.root.render(
-        <AppearanceProvider value="dark">
-          <AppRoot mode="embedded">
-            <Provider store={store}>
+        <Provider store={store}>
+          <AppearanceProvider value="dark">
+            <AppRoot mode="embedded">
               <Component {...this.props()} />
-            </Provider>
-          </AppRoot>
-        </AppearanceProvider>
+            </AppRoot>
+          </AppearanceProvider>
+        </Provider>
       );
     }
   }

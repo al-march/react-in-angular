@@ -1,5 +1,5 @@
-import React, { FC } from "react";
-import { Avatar, Panel, PanelHeader } from "@vkontakte/vkui";
+import React, {FC} from "react";
+import {Avatar, Panel, PanelHeader} from "@vkontakte/vkui";
 
 export const Topbar: FC = () => {
   return (

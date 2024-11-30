@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ReactComponent } from '@/shared/react-component';
-import { PageMain } from './PageMain';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ReactComponent} from '@/shared/react-component';
+import {PageMain} from './PageMain';
 
 @Component({
   selector: 'app-page-main',

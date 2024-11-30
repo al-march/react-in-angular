@@ -1,5 +1,5 @@
 import React, {FC} from "react";
-import {Button, Div, Text} from "@vkontakte/vkui";
+import {Button, Div, Text, useAppearance} from "@vkontakte/vkui";
 import {useSelector} from "react-redux";
 import {selectUsers} from "@/core/state/user.state";
 import {UserCard} from "@/entities/user";
@@ -8,6 +8,8 @@ import {ExternalLink} from "lucide-react";
 
 export function PageMain() {
   const users = useSelector(selectUsers);
+  const appearance = useAppearance();
+  console.log({appearance});
 
   return (
     <Div>

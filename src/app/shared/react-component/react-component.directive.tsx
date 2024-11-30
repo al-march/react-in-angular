@@ -3,6 +3,7 @@ import React, {FC} from "react";
 import {createRoot, Root} from "react-dom/client";
 import {Provider} from "react-redux";
 import {store} from "@/core/state";
+import {AppearanceProvider, AppRoot} from "@vkontakte/vkui";
 
 type InferProps<C> = C extends FC<infer Props> ? Props : never;
 
@@ -34,9 +35,13 @@ export class ReactComponent<Comp extends FC<any>> implements AfterViewInit, OnCh
     const Component: FC = this.react();
     if (this.root && Component) {
       this.root.render(
-        <Provider store={store}>
-          <Component {...this.props()} />
-        </Provider>
+        <AppearanceProvider value="dark">
+          <AppRoot mode="embedded">
+            <Provider store={store}>
+              <Component {...this.props()} />
+            </Provider>
+          </AppRoot>
+        </AppearanceProvider>
       );
     }
   }

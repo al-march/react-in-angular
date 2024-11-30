@@ -1,10 +1,10 @@
-import React, {FC} from "react";
+import React from "react";
 import {Button, Div} from "@vkontakte/vkui";
 import {useSelector} from "react-redux";
 import {selectUsers} from "@/core/state/user.state";
 import {UserCard} from "@/entities/user";
-import {RouterLink} from "@/shared/router";
 import {ExternalLink} from "lucide-react";
+import {ToUserLink} from "@/features/user";
 
 export function PageMain() {
   const users = useSelector(selectUsers);
@@ -15,19 +15,15 @@ export function PageMain() {
         <UserCard
           key={user.id}
           user={user}
-          after={<ToUser id={user.id} />}
+          after={
+            <ToUserLink userId={user.id}>
+              <Button appearance="neutral">
+                <ExternalLink size={18} />
+              </Button>
+            </ToUserLink>
+          }
         />
       ))}
     </Div>
   );
 }
-
-const ToUser: FC<{ id: string | number }> = ({id}) => {
-  return (
-    <RouterLink href={`/users/${id}`}>
-      <Button appearance="neutral">
-        <ExternalLink size={18} />
-      </Button>
-    </RouterLink>
-  );
-};

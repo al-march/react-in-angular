@@ -2,7 +2,7 @@ import React, {FC, HTMLProps, MouseEvent, ReactNode} from "react";
 import {useNgInjector} from "@/core/ng-injector";
 import {Router} from "@angular/router";
 
-interface RouterLinkProps extends HTMLProps<HTMLAnchorElement> {
+export interface RouterLinkProps extends HTMLProps<HTMLAnchorElement> {
   href: string;
   children: ReactNode;
 }

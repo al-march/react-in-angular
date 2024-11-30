@@ -1,6 +1,8 @@
-import { AfterViewInit, Directive, ElementRef, inject, input, OnChanges, OnDestroy } from "@angular/core";
-import React, { FC } from "react";
-import { createRoot, Root } from "react-dom/client";
+import {AfterViewInit, Directive, ElementRef, inject, input, OnChanges, OnDestroy} from "@angular/core";
+import React, {FC} from "react";
+import {createRoot, Root} from "react-dom/client";
+import {Provider} from "react-redux";
+import {store} from "@/core/state";
 
 type InferProps<C> = C extends FC<infer Props> ? Props : never;
 
@@ -31,7 +33,11 @@ export class ReactComponent<Comp extends FC<any>> implements AfterViewInit, OnCh
   protected render(): void {
     const Component: FC = this.react();
     if (this.root && Component) {
-      this.root.render(<Component {...this.props()} />);
+      this.root.render(
+        <Provider store={store}>
+          <Component {...this.props()} />
+        </Provider>
+      );
     }
   }
 }

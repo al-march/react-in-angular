@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Div, Text } from "@vkontakte/vkui";
-import { httpClient } from "@/core/http";
-import { User } from "@/shared/models";
-import { UserCard } from "@/entities/user";
+import React from "react";
+import {Div, Text} from "@vkontakte/vkui";
+import {useSelector} from "react-redux";
+import {selectUsers} from "@/core/state/user.state";
+import {UserCard} from "@/entities/user";
 
 export function PageMain() {
-  const http = httpClient;
 
-  const [users, setUsers] = useState<User[]>([]);
 
-  useEffect(() => {
-    http.get<User[]>("users")
-      .then(({ data }) => setUsers(data));
-  }, []);
+  const users = useSelector(selectUsers);
 
   return (
     <Div>

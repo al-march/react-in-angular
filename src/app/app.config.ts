@@ -1,13 +1,31 @@
-import { ApplicationConfig, provideExperimentalZonelessChangeDetection } from '@angular/core';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+import {
+  ApplicationConfig,
+  inject,
+  provideAppInitializer,
+  provideExperimentalZonelessChangeDetection
+} from '@angular/core';
+import {provideRouter, withComponentInputBinding} from '@angular/router';
 
-import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http';
+import {routes} from './app.routes';
+import {provideHttpClient} from '@angular/common/http';
+import {HttpClient} from '@/core/http';
+import {addUsers} from '@/core/state/user.state';
+import {injectDispatch, provideRedux} from '@reduxjs/angular-redux';
+import {store} from '@/core/state';
+import {User} from '@/shared/models';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideExperimentalZonelessChangeDetection(),
     provideRouter(routes, withComponentInputBinding()),
-    provideHttpClient()
+    provideHttpClient(),
+    provideRedux({store}),
+    provideAppInitializer(async () => {
+      const http = inject(HttpClient);
+      const dispatch = injectDispatch();
+      const response = await http.get<User[]>('users');
+      const users = response.data;
+      dispatch(addUsers(users));
+    })
   ]
 };

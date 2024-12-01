@@ -23,6 +23,8 @@
       "@/core/*": ["./src/app/core/*"],
       "@/features/*": ["./src/app/features/*"],
       "@/entities/*": ["./src/app/entities/*"],
+      "@/widgets/*": ["./src/app/widgets/*"],
+      "@/pages/*": ["./src/app/pages/*"],
     }
   },
   "angularCompilerOptions": {

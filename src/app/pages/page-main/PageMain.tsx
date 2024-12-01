@@ -17,9 +17,7 @@ export function PageMain() {
           user={user}
           after={
             <ToUserLink userId={user.id}>
-              <Button appearance="neutral">
-                <ExternalLink size={18} />
-              </Button>
+              <Button appearance="neutral" after={<ExternalLink size={18} />} />
             </ToUserLink>
           }
         />

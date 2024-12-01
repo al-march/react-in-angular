@@ -18,13 +18,17 @@ export interface Address {
   suite: string;
   city: string;
   zipcode: string;
-  geo: {
-    lat: string;
-    lng: string;
-  };
+  geo: Geo;
 }
 
 export interface Geo {
   lat: number;
   lng: number;
+}
+
+export interface Todo {
+  userId: number;
+  id: number;
+  title: string;
+  completed: boolean;
 }

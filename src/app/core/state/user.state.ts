@@ -18,10 +18,11 @@ export const userSlice = createSlice({
     }
   },
   selectors: {
-    selectUsers: state => state.users
+    selectUsers: state => state.users,
+    selectUserById: (state, userId: string | number) => state.users.find(user => String(user.id) === userId)
   }
 });
 
 export const {addUsers} = userSlice.actions;
-export const {selectUsers} = userSlice.selectors;
+export const {selectUsers, selectUserById} = userSlice.selectors;
 export const usersReducer = userSlice.reducer;

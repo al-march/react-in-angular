@@ -16,6 +16,9 @@ export const themeSlice = createSlice({
   reducers: {
     setTheme(state, action: PayloadAction<ThemeMode>) {
       state.mode = action.payload;
+    },
+    toggleTheme(state) {
+      state.mode = state.mode === 'dark' ? 'light' : 'dark';
     }
   },
   selectors: {
@@ -23,6 +26,6 @@ export const themeSlice = createSlice({
   }
 });
 
-export const {setTheme} = themeSlice.actions;
+export const {setTheme, toggleTheme} = themeSlice.actions;
 export const {selectTheme} = themeSlice.selectors;
 export const themeReducer = themeSlice.reducer;

@@ -1,6 +1,6 @@
 import React from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {selectTheme, setTheme, ThemeMode} from "@/core/state/theme.state";
+import {selectTheme, ThemeMode, toggleTheme} from "@/core/state/theme.state";
 import {Button} from "@vkontakte/vkui";
 import {Moon, Sun} from "lucide-react";
 
@@ -13,11 +13,7 @@ export const ToggleTheme = () => {
   const theme = useSelector(selectTheme);
 
   function toggle() {
-    if (theme === "light") {
-      dispatch(setTheme("dark"));
-    } else {
-      dispatch(setTheme("light"));
-    }
+    dispatch(toggleTheme());
   }
 
   return (

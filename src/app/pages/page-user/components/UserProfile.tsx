@@ -1,11 +1,10 @@
 import {Cell} from "@vkontakte/vkui";
 import {House, LucideMail, PhoneCall} from "lucide-react";
 import React from "react";
-import {useSelector} from "react-redux";
-import {selectUser} from "@/pages/page-user/store";
+import {usePageUserStore} from "@/pages/page-user/store";
 
 export const UserProfile = () => {
-  const user = useSelector(selectUser);
+  const user = usePageUserStore(state => state.user);
 
   if (user) {
     return (

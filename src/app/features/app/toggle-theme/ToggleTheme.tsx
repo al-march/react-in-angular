@@ -1,6 +1,5 @@
 import React from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {selectTheme, ThemeMode, toggleTheme} from "@/core/state/theme.state";
+import {ThemeMode, useThemeStore} from "@/core/state/theme.state";
 import {Button} from "@vkontakte/vkui";
 import {Moon, Sun} from "lucide-react";
 
@@ -9,16 +8,11 @@ const ThemeIcon = ({mode}: { mode: ThemeMode }) => mode === "light"
   : <Moon size="16" />;
 
 export const ToggleTheme = () => {
-  const dispatch = useDispatch();
-  const theme = useSelector(selectTheme);
-
-  function toggle() {
-    dispatch(toggleTheme());
-  }
+  const {mode, toggle} = useThemeStore((state => state));
 
   return (
     <Button
-      after={<ThemeIcon mode={theme} />}
+      after={<ThemeIcon mode={mode} />}
       rounded
       mode="tertiary"
       onClick={toggle}

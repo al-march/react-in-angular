@@ -1,22 +1,18 @@
 import React, {useEffect} from "react";
 import {Button, Div, Spinner} from "@vkontakte/vkui";
-import {useSelector} from "react-redux";
-import {fetchUsersThunk, selectStatus, selectUsers} from "@/core/state/user.state";
 import {UserCard} from "@/entities/user";
 import {ExternalLink} from "lucide-react";
 import {ToUserLink} from "@/features/user";
-import {useAppDispatch} from "@/core/state";
+import {usePageMainStore} from "@/pages/page-main/store";
 
 export function PageMain() {
-  const dispatch = useAppDispatch();
-  const users = useSelector(selectUsers);
-  const status = useSelector(selectStatus);
+  const {users, status, fetchUsers} = usePageMainStore((state) => state);
 
   useEffect(() => {
     if (status === "idle") {
-      dispatch(fetchUsersThunk());
+      fetchUsers();
     }
-  }, [status, dispatch]);
+  }, [status]);
 
   if (status === "idle" || status === "pending") {
     return <Div><Spinner /></Div>;

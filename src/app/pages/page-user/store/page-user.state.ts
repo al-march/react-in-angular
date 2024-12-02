@@ -1,34 +1,34 @@
 import {Todo, User} from '@/shared/models';
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {FetchStatus} from '@/shared/tools';
+import {create} from 'zustand';
+import {httpClient} from '@/core/http';
 
-export interface PageUserState {
+interface State {
   user: User | null;
   todos: Todo[] | null;
+  status: FetchStatus;
 }
 
-const initialState: PageUserState = {
+interface Actions {
+  fetchUser: (userId: number) => Promise<void>;
+  fetchTodos: (userId: number) => Promise<void>;
+  reset: () => void;
+}
+
+export const usePageUserStore = create<State & Actions>((set) => ({
   user: null,
-  todos: null
-};
+  todos: null,
+  status: 'idle',
 
-export const pageUserSlice = createSlice({
-  name: 'userPage',
-  initialState,
-  reducers: {
-    addUser(state, action: PayloadAction<User>) {
-      state.user = action.payload;
-      state.todos = null;
-    },
-    addTodos(state, action: PayloadAction<Todo[]>) {
-      state.todos = action.payload;
-    }
+  fetchUser: async (userId: number) => {
+    set(() => ({user: null, status: 'pending'}));
+    const user = (await httpClient.get<User>(`/users/${userId}`)).data;
+    set(() => ({user, todos: null, status: 'succeeded'}));
   },
-  selectors: {
-    selectUser: state => state.user,
-    selectTodos: (state) => state.todos
-  }
-});
-
-export const {addUser, addTodos} = pageUserSlice.actions;
-export const {selectUser, selectTodos} = pageUserSlice.selectors;
-export const pageUserReducer = pageUserSlice.reducer;
+  fetchTodos: async (userId: number) => {
+    set(() => ({status: 'pending'}));
+    const todos = (await httpClient.get<Todo[]>(`/todos/?userId=${userId}`)).data;
+    set(() => ({todos, status: 'succeeded'}));
+  },
+  reset: () => set(() => ({user: null, todos: null}))
+}));

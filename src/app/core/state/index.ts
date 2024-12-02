@@ -1,19 +1,14 @@
-import {configureStore} from '@reduxjs/toolkit';
-import {usersReducer} from './user.state';
-import {themeReducer} from './theme.state';
-import {pageUserReducer} from '@/pages/page-user/store';
-import {useDispatch} from 'react-redux';
+import {StoreApi} from 'zustand';
+import {Observable} from 'rxjs';
+import {toSignal} from '@angular/core/rxjs-interop';
 
-export const store = configureStore({
-  reducer: {
-    users: usersReducer,
-    theme: themeReducer,
 
-    userPage: pageUserReducer
-  }
-});
+export function useNgStore<T>(store: StoreApi<T>) {
+  const state$ = new Observable<T>((subscriber) => {
+    subscriber.next(store.getState());
+    const unsubscribe = store.subscribe((state) => subscriber.next(state));
+    return () => unsubscribe();
+  });
 
-export type RootState = ReturnType<typeof store.getState>;
-export type RootDispatch = typeof store.dispatch;
-
-export const useAppDispatch = () => useDispatch<RootDispatch>();
+  return toSignal(state$, {initialValue: store.getState()});
+}

@@ -1,11 +1,9 @@
 import {AfterViewInit, Directive, ElementRef, inject, input, OnDestroy} from "@angular/core";
 import React, {FC} from "react";
 import {createRoot, Root} from "react-dom/client";
-import {Provider} from "react-redux";
-import {store} from "@/core/state";
+import {useNgStore} from "@/core/state";
 import {AppearanceProvider, AppRoot} from "@vkontakte/vkui";
-import {injectSelector} from "@reduxjs/angular-redux";
-import {selectTheme} from "@/core/state/theme.state";
+import {useThemeStore} from "@/core/state/theme.state";
 import {combineLatest} from "rxjs";
 import {takeUntilDestroyed, toObservable} from "@angular/core/rxjs-interop";
 
@@ -19,7 +17,7 @@ export class ReactComponent<Comp extends FC<any>> implements AfterViewInit, OnDe
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private root?: Root;
 
-  readonly theme = injectSelector(selectTheme);
+  readonly theme = useNgStore(useThemeStore);
   readonly react = input.required<Comp>();
   readonly props = input<InferProps<Comp>>();
 
@@ -51,13 +49,11 @@ export class ReactComponent<Comp extends FC<any>> implements AfterViewInit, OnDe
 
     if (this.root && Component) {
       this.root.render(
-        <Provider store={store}>
-          <AppearanceProvider value={this.theme()}>
-            <AppRoot mode="embedded">
-              <Component {...this.props()} />
-            </AppRoot>
-          </AppearanceProvider>
-        </Provider>
+        <AppearanceProvider value={this.theme().mode}>
+          <AppRoot mode="embedded">
+            <Component {...this.props()} />
+          </AppRoot>
+        </AppearanceProvider>
       );
     }
   }

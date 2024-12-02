@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, effect} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {TopbarComponent} from './widgets/topbar';
-import {injectSelector} from '@reduxjs/angular-redux';
-import {selectTheme, ThemeMode} from '@/core/state/theme.state';
+import {ThemeMode, useThemeStore} from '@/core/state/theme.state';
+import {useNgStore} from '@/core/state';
 
 const modeClasses: Record<ThemeMode, string> = {
   dark: 'vkui--vkBase--dark',
@@ -17,11 +17,13 @@ const modeClasses: Record<ThemeMode, string> = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
-  theme = injectSelector(selectTheme);
+  theme = useNgStore(useThemeStore);
 
   constructor() {
     effect(() => {
-      if (this.theme() === 'dark') {
+      const mode = this.theme().mode;
+
+      if (mode === 'dark') {
         document.documentElement.classList.remove(modeClasses.light);
         document.documentElement.classList.add(modeClasses.dark);
       } else {

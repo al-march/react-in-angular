@@ -1,4 +1,4 @@
-import {AfterViewInit, Directive, ElementRef, inject, input, OnDestroy} from "@angular/core";
+import {AfterViewInit, Directive, ElementRef, inject, INJECTOR, input, OnDestroy} from "@angular/core";
 import React, {FC} from "react";
 import {createRoot, Root} from "react-dom/client";
 import {useNgStore} from "@/core/state";
@@ -6,6 +6,7 @@ import {AppearanceProvider, AppRoot} from "@vkontakte/vkui";
 import {useThemeStore} from "@/core/state/theme.state";
 import {combineLatest} from "rxjs";
 import {takeUntilDestroyed, toObservable} from "@angular/core/rxjs-interop";
+import {NgContext} from "@/shared/react-component/AngularContext";
 
 type InferProps<C> = C extends FC<infer Props> ? Props : never;
 
@@ -14,6 +15,7 @@ type InferProps<C> = C extends FC<infer Props> ? Props : never;
   standalone: true
 })
 export class ReactComponent<Comp extends FC<any>> implements AfterViewInit, OnDestroy {
+  private readonly injector = inject(INJECTOR);
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private root?: Root;
 
@@ -49,11 +51,13 @@ export class ReactComponent<Comp extends FC<any>> implements AfterViewInit, OnDe
 
     if (this.root && Component) {
       this.root.render(
-        <AppearanceProvider value={this.theme().mode}>
-          <AppRoot mode="embedded">
-            <Component {...this.props()} />
-          </AppRoot>
-        </AppearanceProvider>
+        <NgContext.Provider value={{injector: this.injector}}>
+          <AppearanceProvider value={this.theme().mode}>
+            <AppRoot mode="embedded">
+              <Component {...this.props()} />
+            </AppRoot>
+          </AppearanceProvider>
+        </NgContext.Provider>
       );
     }
   }

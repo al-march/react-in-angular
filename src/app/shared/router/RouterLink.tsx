@@ -1,6 +1,6 @@
-import React, {FC, HTMLProps, MouseEvent, ReactNode} from "react";
-import {useNgInjector} from "@/core/ng-injector";
+import React, {FC, HTMLProps, MouseEvent, ReactNode, useContext} from "react";
 import {Router} from "@angular/router";
+import {NgContext} from "@/shared/react-component/AngularContext";
 
 export interface RouterLinkProps extends HTMLProps<HTMLAnchorElement> {
   href: string;
@@ -14,9 +14,10 @@ export interface RouterLinkProps extends HTMLProps<HTMLAnchorElement> {
  * TODO: избавиться от зависимостей от Angular
  */
 export const RouterLink: FC<RouterLinkProps> = (props) => {
+  const router = useContext(NgContext).injector.get(Router);
+
   function navigate(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
-    const router = useNgInjector(Router);
     router.navigate(props.href.split("/"));
   }
 

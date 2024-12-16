@@ -1,11 +1,11 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {ReactComponent} from '@/shared/react-component';
+import {HostReact} from '@/shared/react-component';
 import {PageMain} from './PageMain';
 
 @Component({
   selector: 'app-page-main',
   imports: [
-    ReactComponent
+    HostReact
   ],
   template: `
     <app-react

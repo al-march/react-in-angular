@@ -1,67 +1,61 @@
-import {AfterViewInit, Directive, ElementRef, inject, INJECTOR, input, OnDestroy} from "@angular/core";
+import {AfterViewInit, Directive, effect, ElementRef, inject, INJECTOR, input, OnDestroy, signal} from "@angular/core";
 import React, {FC} from "react";
 import {createRoot, Root} from "react-dom/client";
 import {useNgStore} from "@/core/state";
 import {AppRoot, ConfigProvider} from "@vkontakte/vkui";
 import {useThemeStore} from "@/core/state/theme.state";
-import {combineLatest} from "rxjs";
-import {takeUntilDestroyed, toObservable} from "@angular/core/rxjs-interop";
 import {NgContext} from "@/shared/react-component/AngularContext";
 
 @Directive({
   selector: "[react], app-react",
   standalone: true
 })
-export class ReactComponent<T> implements AfterViewInit, OnDestroy {
+export class HostReact<T> implements AfterViewInit, OnDestroy {
   private readonly injector = inject(INJECTOR);
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
-  private root?: Root;
+  private readonly root = signal<Root | null>(null);
 
+  /* Тема преокта */
   readonly theme = useNgStore(useThemeStore);
+  /* React компонент */
   readonly react = input.required<FC<T>>();
+  /* Пропсы переданного React компонента */
   readonly props = input<T>();
 
   constructor() {
-    this.checkUpdates().pipe(
-      takeUntilDestroyed()
-    ).subscribe(() => this.render());
-  }
+    /**
+     * Следим за изменениями всех зависимостей React.
+     * Производим новый render если что-то изменилось.
+     *
+     * Функция effect в Angular выполняет переданный ей callback каждый раз,
+     * когда один из используемых сигналов внутри получил обновленное значение.
+     */
+    effect(() => {
+      const injector = this.injector;
+      const Component = this.react() as FC;
+      const props = this.props() || {};
 
-  ngAfterViewInit(): void {
-    this.root = createRoot(this.elementRef.nativeElement);
-    this.render();
-  }
-
-  ngOnDestroy(): void {
-    this.root?.unmount();
-  }
-
-  protected checkUpdates() {
-    return combineLatest([
-      toObservable(this.theme),
-      toObservable(this.react),
-      toObservable(this.props)
-    ]);
-  }
-
-  protected render(): void {
-    const injector = this.injector;
-    const Component = this.react() as FC;
-    const props = this.props() || {};
-
-    if (this.root) {
-      this.root.render(
+      this.root()?.render(
         <NgContext value={{injector}}>
           <ConfigProvider colorScheme={this.theme()?.mode ?? "light"}>
             <AppRoot mode="embedded">
-              {props
-                ? <Component {...props} />
-                : <Component />
-              }
+              <Component {...props} />
             </AppRoot>
           </ConfigProvider>
         </NgContext>
       );
-    }
+    });
+  }
+
+  /* Инициализируем root при готовности HTML элемента */
+  ngAfterViewInit(): void {
+    this.root.set(
+      createRoot(this.elementRef.nativeElement)
+    );
+  }
+
+  /* Размонтируем root при уничтожении Angular компонента */
+  ngOnDestroy(): void {
+    this.root()?.unmount();
   }
 }

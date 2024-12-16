@@ -2,26 +2,24 @@ import {AfterViewInit, Directive, ElementRef, inject, INJECTOR, input, OnDestroy
 import React, {FC} from "react";
 import {createRoot, Root} from "react-dom/client";
 import {useNgStore} from "@/core/state";
-import {AppearanceProvider, AppRoot} from "@vkontakte/vkui";
+import {AppRoot, ConfigProvider} from "@vkontakte/vkui";
 import {useThemeStore} from "@/core/state/theme.state";
 import {combineLatest} from "rxjs";
 import {takeUntilDestroyed, toObservable} from "@angular/core/rxjs-interop";
 import {NgContext} from "@/shared/react-component/AngularContext";
 
-type InferProps<C> = C extends FC<infer Props> ? Props : never;
-
 @Directive({
   selector: "[react], app-react",
   standalone: true
 })
-export class ReactComponent<Comp extends FC<any>> implements AfterViewInit, OnDestroy {
+export class ReactComponent<T> implements AfterViewInit, OnDestroy {
   private readonly injector = inject(INJECTOR);
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private root?: Root;
 
   readonly theme = useNgStore(useThemeStore);
-  readonly react = input.required<Comp>();
-  readonly props = input<InferProps<Comp>>();
+  readonly react = input.required<FC<T>>();
+  readonly props = input<T>();
 
   constructor() {
     this.checkUpdates().pipe(
@@ -47,17 +45,22 @@ export class ReactComponent<Comp extends FC<any>> implements AfterViewInit, OnDe
   }
 
   protected render(): void {
-    const Component: FC = this.react();
+    const injector = this.injector;
+    const Component = this.react() as FC;
+    const props = this.props() || {};
 
-    if (this.root && Component) {
+    if (this.root) {
       this.root.render(
-        <NgContext.Provider value={{injector: this.injector}}>
-          <AppearanceProvider value={this.theme().mode}>
+        <NgContext value={{injector}}>
+          <ConfigProvider colorScheme={this.theme()?.mode ?? "light"}>
             <AppRoot mode="embedded">
-              <Component {...this.props()} />
+              {props
+                ? <Component {...props} />
+                : <Component />
+              }
             </AppRoot>
-          </AppearanceProvider>
-        </NgContext.Provider>
+          </ConfigProvider>
+        </NgContext>
       );
     }
   }
